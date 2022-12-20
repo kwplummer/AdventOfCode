@@ -136,21 +136,14 @@ object Day20 {
         return list
     }
 
-    private fun sumIndices(list: CircularList): Long {
-        val thousandIndex = 1000
-        val twoThousandIndex = 2000
-        val threeThousandIndex = 3000
-        return list[thousandIndex] + list[twoThousandIndex] + list[threeThousandIndex]
-    }
-
     fun scenarioOne(textFile: String) =
         File(textFile).readLines()
             .let { buildAndShiftNumbers(it, 1, 1) }
-            .let { sumIndices(it) }
+            .let { it[1000] + it[2000] + it[3000] }
 
 
     fun scenarioTwo(textFile: String) =
         File(textFile).readLines()
             .let { buildAndShiftNumbers(it, 10, DECRYPTION_KEY) }
-            .let { sumIndices(it) }
+            .let { it[1000] + it[2000] + it[3000] }
 }

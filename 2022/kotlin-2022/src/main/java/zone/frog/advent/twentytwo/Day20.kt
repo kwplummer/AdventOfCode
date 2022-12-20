@@ -45,7 +45,7 @@ object Day20 {
         }
 
         fun shift(num: IdentityEqualLong) {
-            // Exit early if nothign to move
+            // Exit early if nothing to move
             if (num.long == 0L) {
                 return
             }

@@ -1,8 +1,8 @@
+(ql:quickload '(:str :cl-ppcre :binding-arrows :series))
+(defpackage :advent (:use :cl :cl-ppcre :binding-arrows))
+(in-package :advent)
+
 (ql:quickload :trivia)
-(ql:quickload :str)
-;; For fun, let's use iterate and series in addition to plain-old LOOP
-(ql:quickload :iterate)
-(ql:quickload :series)
 
 (defconstant +CHOICES+ '(:rock :paper :scissors))
 
@@ -37,19 +37,13 @@
     (+ (symbol-points rhs)
        (symbol-points (rps-beats rhs lhs)))))
 
-;; Loop, iterate, series. Take your pick.
-(print (loop for line in (str:lines (str:from-file "../input/day2.txt"))
-             summing (run-match line) into total
-             finally (return total)))
-
-(print (iterate:iterate
-         (iterate:for line in (str:lines (str:from-file "../input/day2.txt")))
-         (iterate:sum (run-match line))))
-
-(print (series:collect-sum
-        (series:map-fn 'integer #'run-match
-                       (series:scan 'list
-                                    (str:lines (str:from-file "../input/day2.txt"))))))
+(->> "../input/day2.txt"
+  (str:from-file)
+  (str:lines)
+  (series:scan 'list)
+  (series:map-fn 'integer #'run-match)
+  (series:collect-sum)
+  (print))
 
 (defun rhs-to-outcome (rhs)
   (trivia:ematch rhs
@@ -64,9 +58,13 @@
     (+ (symbol-points rhs)
        (symbol-points
         (find-if (lambda (choice)
-                   (equal rhs (rps-beats choice lhs))) +CHOICES+)))))
+                   (equal rhs (rps-beats choice lhs)))
+                 +CHOICES+)))))
 
-(time
- (print (loop for line in (str:lines (str:from-file "../input/day2.txt"))
-              summing (rig-match line) into total
-              finally (return total))))
+(->> "../input/day2.txt"
+  (str:from-file)
+  (str:lines)
+  (series:scan 'list)
+  (series:map-fn 'integer #'rig-match)
+  (series:collect-sum)
+  (print))

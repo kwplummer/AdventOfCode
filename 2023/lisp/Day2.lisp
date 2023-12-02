@@ -8,8 +8,7 @@
 (defun session-valid (session)
   (with-slots (cubes) session
     (loop for (count cube) in cubes
-          when (> count (cdr (assoc cube *cube-limits* :test #'equal)))
-            do (return nil)
+          when (> count (cdr (assoc cube *cube-limits* :test #'equal))) do (return nil)
           finally (return t))))
 
 (parseq:defrule game-session-rule ()
@@ -30,7 +29,7 @@
              (mapcar #'session-valid)
              (every #'identity))
           do (push (1+ i) valid)
-        finally (return (reduce #'+ (reverse valid)))))
+        finally (return (reduce #'+ valid))))
 (print (time (part-1)))
 
 (defun max-cubes-per-session (sessions)

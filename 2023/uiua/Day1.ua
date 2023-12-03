@@ -2,7 +2,7 @@ W ← {"zero" "one" "two" "three" "four" "five" "six" "seven" "eight" "nine"}
 D ← ["0" "1" "2" "3" "4" "5" "6" "7" "8" "9"]
 I ← ≡(□ ⬚@0↯[↥5⧻] .⊔) ⊜□ ≠ ,@\n &fras "../input/day1.txt"
 PartOne ← /+ ≡(+⊃(×10 parse ⊏ 0)(parse ⊏ -1⧻) .▽ > @0 .▽ ≤ @9 .⊔) I
-PartTwo ← /+ ≡(+⊃(×10 ⊏ 0)(⊏ -1⧻) .▽ ≠ 0 ./+ + ≡(× ⊙⊗ ⊙: :D ⌕ :⊙. ⊔:⊔) D : ≡(× ⊙⊗ ⊙□ ⊙: :W ⌕ :⊙. ⊔:⊔) W.) I
+PartTwo ← /+ ≡(+⊃(×10 ⊏ 0)(⊏ -1⧻) .▽ ≠ 0 ./+ + ≡(× ⊙⊗ ⊙: :D ⌕ :⊙. ⊔:⊔) D: ≡(× ⊙⊗ ⊙□ ⊙: :W ⌕ :⊙. ⊔:⊔) W.) I
 
 &p PartOne
 &p PartTwo

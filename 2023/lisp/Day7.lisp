@@ -1,9 +1,10 @@
-(ql:quickload '(:str :binding-arrows :alexandria))
-(defpackage :advent (:use :cl :binding-arrows))
+(ql:quickload '(:str :binding-arrows :alexandria :hu.dwim.defclass-star))
+(defpackage :advent (:use :cl :binding-arrows :hu.dwim.defclass-star))
 (in-package :advent)
 (defconstant +joker+ #\J)
 (defparameter *joker-world* nil)   ; Differs based on part
 (defparameter *card-ordering* '())
+(defclass* hand () (cards bid (classification nil)))
 (defun count-chars (list)
   (loop with counts = (make-hash-table)
         for char in (if *joker-world* (remove +joker+ list) list)
@@ -28,7 +29,7 @@
              (first (first sorted))
              (second (second sorted)))
         (case (count +joker+ hand)
-          (2 (<= 2 first))
+          (2 (= 2 first))
           (1 (or (= 3 first)
                  (and (= 2 first) (= first second))))
           (t t)))
@@ -38,7 +39,7 @@
 
 (defun three-of-a-kind (hand)
   (if (and *joker-world* (member +joker+ hand))
-      (<= 3 (+ (count +joker+ hand) (first (sort (alexandria:hash-table-values (count-chars hand)) #'>))))
+      (= 3 (+ (count +joker+ hand) (first (sort (alexandria:hash-table-values (count-chars hand)) #'>))))
       (= 3 (first (sort (alexandria:hash-table-values (count-chars hand)) #'>)))))
 
 (defun two-pair (hand)
@@ -67,29 +68,27 @@
         ((one-pair hand) 2)
         ((high-card hand) 1)))
 
-(defun left-first (left right)
+(defun right-first (left right)
   (loop for i from 0 below (min (length left) (length right))
-        for left-card = (position (nth i left) *card-ordering*) ; Note: order is high to low.
+        for left-card = (position (nth i left) *card-ordering*)
         for right-card = (position (nth i right) *card-ordering*)
         when (< left-card right-card) return nil
-        when (> left-card right-card) return t))
+          when (> left-card right-card) return t))
 
-(defun compare-hands (left-pair right-pair)
-  (let* ((left-hand (first left-pair))
-         (right-hand (first right-pair))
-         (left-class (classify-hand left-hand))
-         (right-class (classify-hand right-hand)))
-    (cond ((< left-class right-class) t)
-          ((> left-class right-class) nil)
-          (t (left-first left-hand right-hand)))))
+(defun compare-hands (left right)
+  (cond ((< (classification-of left) (classification-of right)) t)
+         ((> (classification-of left) (classification-of right)) nil)
+         (t (right-first (cards-of left) (cards-of right)))))
 
 (defun parse-hand (line)
-  (let ((parts (str:split #\Space line)))
-    (list (coerce (first parts) 'list) (parse-integer (second parts)))))
+  (let* ((parts (str:split #\Space line))
+         (hand (make-instance 'hand :cards (coerce (first parts) 'list) :bid (parse-integer (second parts)))))
+    (setf (classification-of hand) (classify-hand (cards-of hand)))
+    hand))
 
 (defun run-solution (file)
-  (let* ((sorted (-<>> file (str:lines) (mapcar #'parse-hand) (sort <> #'compare-hands))))
-    (loop for i from 0 below (length sorted) sum (* (1+ i) (second (nth i sorted))))))
+  (let ((sorted (-<>> file (str:lines) (mapcar #'parse-hand) (sort <> #'compare-hands) (mapcar #'bid-of))))
+    (loop for i from 0 below (length sorted) sum (* (1+ i) (nth i sorted)))))
 
 (let ((*joker-world* nil) ; Not in joker world, jokers are regular cards.
       (*card-ordering* '(#\A #\K #\Q #\J #\T #\9 #\8 #\7 #\6 #\5 #\4 #\3 #\2))) ; Regular order

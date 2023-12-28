@@ -55,7 +55,7 @@
 ;; Therefore we only need some subset of the infinite map mapped into distances.
 ;; We can then repeat the distance of the first/last row/column infinitely, as those tiles must be using the blank rows/columns.
 ;; When calculating points we can leap over tiles and do some bounds checking to tell if it's incldued.
-(defparameter *tile-lookaround* 4) ; How many copies of the map should we look around?
+(defparameter *tile-lookaround* 3) ; How many copies of the map should we look around?
 
 (defun distance-map (file)
   (loop with queue = (list) and counter = 0
@@ -97,7 +97,7 @@
   (loop with *cache* = (make-instance 'function-cache:lru-cache :capacity 1000000)
         with (min-distances max-y max-x) = (distance-map file)
         with count = 0
-        with lookaround-range = (alexandria:iota (1- (* 2 *tile-lookaround*)) :start (- (1- *tile-lookaround*)))
+        with lookaround-range = (alexandria:iota (1+ (* 2 *tile-lookaround*)) :start (- *tile-lookaround*))
         for y from 0 below max-y
         do (loop for x from 0 below max-x
                  ;; Don't bother checking the infinite map if it's not even reachable in the relative one.

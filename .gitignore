@@ -4,3 +4,8 @@ gradle/
 .gradle/
 out/
 */input
+target
+*.beam
+Cargo.lock
+2024/clojure/.hgignore
+2024/clojure/.nrepl-port

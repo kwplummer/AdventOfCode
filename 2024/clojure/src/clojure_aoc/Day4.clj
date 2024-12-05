@@ -1,7 +1,7 @@
 (ns zone.frog (:require [clojure.string :as str] [clojure.math :as math]))
 
 (defn read-input [filename]
-  (let [input (str/split-lines (slurp filename))]
+  (let [input (str/split-lines (get-advent-of-code-input filename))]
     (into {} (for [row (range (count input))
                    [col char] (map-indexed vector (str/split (nth input row) #""))]
                [[row col] char]))))
@@ -42,5 +42,5 @@
                                           1 0))))
                                  0 (range (inc length)))))
             0 (range (inc length)))))
-(print (time (part-2 "../input/day4-test.txt")))
-(print (time (part-2 "../input/day4.txt")))
+(println (time (part-2 "../input/day4-test.txt")))
+(println (time (part-2 "../input/day4.txt")))

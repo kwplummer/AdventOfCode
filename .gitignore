@@ -9,3 +9,5 @@ target
 Cargo.lock
 2024/clojure/.hgignore
 2024/clojure/.nrepl-port
+2024/rust
+2024/golang
